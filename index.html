@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Hub — Ernesto</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Sora', system-ui, sans-serif;
+    background: #F8F7FC;
+    color: #1A1A2E;
+    padding: 40px 20px 80px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  .container { max-width: 1180px; margin: 0 auto; }
+  header.hero {
+    background: linear-gradient(135deg, #7B61FF 0%, #5B41DF 50%, #C026D3 100%);
+    color: white;
+    padding: 48px 40px;
+    border-radius: 20px;
+    margin-bottom: 28px;
+    box-shadow: 0 20px 50px rgba(123,97,255,0.22);
+    position: relative;
+    overflow: hidden;
+  }
+  header.hero::before {
+    content: '📚';
+    position: absolute;
+    top: -28px; right: -10px;
+    font-size: 240px;
+    opacity: 0.09;
+    transform: rotate(-10deg);
+    line-height: 1;
+    pointer-events: none;
+  }
+  header.hero .label {
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: 11px;
+    opacity: 0.85;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  header.hero h1 {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    margin-bottom: 8px;
+  }
+  header.hero .sub {
+    font-size: 15px;
+    opacity: 0.92;
+    max-width: 720px;
+    font-weight: 400;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 36px;
+  }
+  .stat {
+    background: white;
+    padding: 16px 18px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    border-left: 3px solid #7B61FF;
+  }
+  .stat .k { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #6B6B85; font-weight: 600; margin-bottom: 4px; }
+  .stat .v { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stat .s { font-size: 11px; color: #6B6B85; margin-top: 2px; }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    padding: 10px 18px;
+    border-radius: 10px;
+    background: white;
+    border: 1.5px solid #E5E1F5;
+    color: #6B6B85;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .tab.active {
+    background: #7B61FF;
+    color: white;
+    border-color: #7B61FF;
+    box-shadow: 0 4px 14px rgba(123,97,255,0.3);
+  }
+  .tab:hover:not(.active) { border-color: #7B61FF; color: #7B61FF; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: #7B61FF;
+    font-weight: 700;
+    margin: 32px 0 14px;
+    padding-left: 12px;
+    border-left: 4px solid #7B61FF;
+  }
+  .section-title:first-child { margin-top: 0; }
+  .section-title .count {
+    font-size: 11px;
+    color: #6B6B85;
+    margin-left: 8px;
+    letter-spacing: 0;
+    text-transform: none;
+    font-weight: 500;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    border: 1px solid #ECE8F7;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(123,97,255,0.12);
+    border-color: #C9BEFF;
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1A1A2E;
+    line-height: 1.3;
+  }
+  .card .desc {
+    font-size: 12.5px;
+    color: #6B6B85;
+    line-height: 1.45;
+  }
+  .badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 2px;
+  }
+  .badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .b-green { background: #DCFCE7; color: #166534; }
+  .b-yellow { background: #FEF3C7; color: #92400E; }
+  .b-orange { background: #FFEDD5; color: #9A3412; }
+  .b-red { background: #FEE2E2; color: #991B1B; }
+  .b-blue { background: #DBEAFE; color: #1E40AF; }
+  .b-gray { background: #F1F5F9; color: #475569; }
+  .b-purple { background: #EDE9FE; color: #5B21B6; }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px dashed #ECE8F7;
+    font-size: 11.5px;
+  }
+  .card-footer .location { color: #6B6B85; }
+  .card a.open {
+    color: #7B61FF;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .card a.open:hover { text-decoration: underline; }
+  .card.no-link { opacity: 0.92; }
+
+  .legend {
+    background: white;
+    padding: 18px 22px;
+    border-radius: 12px;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  }
+  .legend h4 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #6B6B85;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 8px;
+  }
+  .legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #1A1A2E; }
+
+  footer.foot {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 11px;
+    color: #6B6B85;
+  }
+
+  @media (max-width: 640px) {
+    body { padding: 24px 12px 60px; }
+    header.hero { padding: 32px 24px; }
+    header.hero h1 { font-size: 28px; }
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="pin-gate" style="position:fixed; inset:0; background:linear-gradient(135deg, #7B61FF 0%, #5B41DF 100%); display:flex; align-items:center; justify-content:center; z-index:99999; font-family:'Sora', system-ui, sans-serif;">
+  <div style="background:white; padding:40px 36px; border-radius:18px; box-shadow:0 20px 50px rgba(0,0,0,0.3); text-align:center; max-width:340px; width:90%;">
+    <div style="font-size:36px; margin-bottom:14px;">🔒</div>
+    <div style="font-size:11px; color:#6B6B85; letter-spacing:2.5px; text-transform:uppercase; margin-bottom:10px; font-weight:600;">Acceso privado</div>
+    <h2 style="font-size:20px; font-weight:700; color:#1A1A2E; margin-bottom:8px;">Introduce el PIN</h2>
+    <p style="font-size:13px; color:#6B6B85; margin-bottom:22px;">HTML Hub personal</p>
+    <input type="password" id="pin-input" inputmode="numeric" maxlength="6" autocomplete="off" style="width:100%; padding:14px; font-size:24px; text-align:center; letter-spacing:8px; border:2px solid #E5E1F5; border-radius:10px; font-family:inherit; font-weight:600; color:#1A1A2E; outline:none; margin-bottom:14px;" />
+    <button id="pin-submit" style="width:100%; padding:13px; font-size:14px; background:linear-gradient(135deg, #7B61FF 0%, #5B41DF 100%); color:white; border:none; border-radius:10px; font-family:inherit; font-weight:600; cursor:pointer; letter-spacing:0.5px;">Entrar</button>
+    <div id="pin-error" style="font-size:12px; color:#DC2626; margin-top:10px; min-height:16px; font-weight:500;"></div>
+  </div>
+</div>
+<script>
+(function(){var PIN='75012',KEY='htmlHubUnlocked',g=document.getElementById('pin-gate'),i=document.getElementById('pin-input'),s=document.getElementById('pin-submit'),e=document.getElementById('pin-error');if(sessionStorage.getItem(KEY)==='1'){g.remove();return;}document.documentElement.style.overflow='hidden';setTimeout(function(){i.focus();},80);function c(){if(i.value===PIN){sessionStorage.setItem(KEY,'1');g.style.transition='opacity 0.3s';g.style.opacity='0';document.documentElement.style.overflow='';setTimeout(function(){g.remove();},320);}else{e.textContent='PIN incorrecto';i.value='';i.style.borderColor='#DC2626';setTimeout(function(){i.style.borderColor='#E5E1F5';},1200);}}s.addEventListener('click',c);i.addEventListener('keydown',function(ev){if(ev.key==='Enter')c();});})();
+</script>
+
+<div class="container">
+
+<header class="hero">
+  <div class="label">Index Personnel</div>
+  <h1>HTML Hub</h1>
+  <p class="sub">Inventario de todos mis HTMLs con análisis de sensibilidad. Separado entre lo que vive en mi GitHub personal y lo de Flowie.</p>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="k">Total HTMLs</div><div class="v">~155</div><div class="s">archivos catalogados</div></div>
+  <div class="stat"><div class="k">GitHub Perso Public</div><div class="v">5 repos</div><div class="s">Pages activos</div></div>
+  <div class="stat"><div class="k">GitHub Privado</div><div class="v">10 repos</div><div class="s">perso + Flowie work</div></div>
+  <div class="stat"><div class="k">Solo local</div><div class="v">~80</div><div class="s">Daily reports, briefings, legal</div></div>
+  <div class="stat"><div class="k">🔴 Highly sensible</div><div class="v">~12</div><div class="s">legal, HR, financial</div></div>
+</div>
+
+<div class="legend">
+  <h4>Leyenda de sensibilidad</h4>
+  <div class="legend-grid">
+    <div class="legend-row"><span class="badge b-green">🟢 Public-safe</span> sin datos personales ni de cliente</div>
+    <div class="legend-row"><span class="badge b-yellow">🟡 Personal</span> salud, recetas, familia, gastos</div>
+    <div class="legend-row"><span class="badge b-orange">🟠 Internal Flowie</span> data de clientes, proyectos, métricas internas</div>
+    <div class="legend-row"><span class="badge b-red">🔴 Highly sensible</span> legal, HR, finanzas personales, estrategia exit</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-section="perso">👤 Personal — GitHub perso</button>
+  <button class="tab" data-section="flowie">💼 Flowie — Work</button>
+  <button class="tab" data-section="sensible">🔴 Highly sensible</button>
+</div>
+
+<!-- ================ PERSONAL ================ -->
+<div class="section active" id="sec-perso">
+
+  <div class="section-title">🍳 Recetario <span class="count">(11 archivos — público)</span></div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-head">
+        <h3>Recetario Index</h3>
+        <div class="badges"><span class="badge b-green">🟢 Public-safe</span><span class="badge b-blue">GH Public</span></div>
+      </div>
+      <div class="desc">Página principal del recetario personal. Recetas familiares contadas con estilo propio.</div>
+      <div class="card-footer">
+        <span class="location">ernesto-ux/recetario</span>
+        <a class="open" href="https://ernesto-ux.github.io/recetario/" target="_blank">Abrir ↗</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>10 recetas individuales</h3><div class="badges"><span class="badge b-green">🟢 Public-safe</span><span class="badge b-blue">GH Public</span></div></div>
+      <div class="desc">Cheesecake, pesto, lasagna, lentejas, frittata, spanakopita, omelette x2, beef green beans pasta, cheesecake light.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Recetario/</span><a class="open" href="https://ernesto-ux.github.io/recetario/" target="_blank">Abrir ↗</a></div>
+    </div>
+  </div>
+
+  <div class="section-title">🥗 NutrIA <span class="count">(3 archivos — público)</span></div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-head"><h3>NutrIA Dashboard</h3><div class="badges"><span class="badge b-yellow">🟡 Personal</span><span class="badge b-blue">GH Public</span></div></div>
+      <div class="desc">Tracker de nutrición personal: macros, peso, log diario. Contiene data de salud personal (peso, BMR, TDEE).</div>
+      <div class="card-footer"><span class="location">ernesto-ux/NutrIA</span><a class="open" href="https://ernesto-ux.github.io/NutrIA/" target="_blank">Abrir ↗</a></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Food Analysis · Reset</h3><div class="badges"><span class="badge b-yellow">🟡 Personal</span><span class="badge b-blue">GH Public</span></div></div>
+      <div class="desc">Páginas auxiliares del tracker. Reset borra data local.</div>
+      <div class="card-footer"><span class="location">~/Desktop/NutrIA/</span><a class="open" href="https://ernesto-ux.github.io/NutrIA/" target="_blank">Abrir ↗</a></div>
+    </div>
+  </div>
+
+  <div class="section-title">✈️ Trip Expenses <span class="count">(4 archivos — PIN público)</span></div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-head"><h3>Trip Expenses Dashboard</h3><div class="badges"><span class="badge b-yellow">🟡 Personal</span><span class="badge b-blue">GH Public + PIN</span></div></div>
+      <div class="desc">Storyline 2026 de viajes con gastos. PIN 75012 client-side. Contiene importes financieros personales.</div>
+      <div class="card-footer"><span class="location">ernesto-ux/trip-expenses-dashboard</span><a class="open" href="https://ernesto-ux.github.io/trip-expenses-dashboard/" target="_blank">Abrir ↗</a></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Amsterdam 2026-04</h3><div class="badges"><span class="badge b-yellow">🟡 Personal</span><span class="badge b-blue">GH Public + PIN</span></div></div>
+      <div class="desc">Detalle del primer viaje. Importes y categorías.</div>
+      <div class="card-footer"><span class="location">trip-expenses-dashboard/src</span><a class="open" href="https://ernesto-ux.github.io/trip-expenses-dashboard/src/amsterdam-2026-04.html" target="_blank">Abrir ↗</a></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Toulouse-Carcassonne 2026-05</h3><div class="badges"><span class="badge b-yellow">🟡 Personal</span><span class="badge b-blue">GH Public + PIN</span></div></div>
+      <div class="desc">Segundo viaje del año.</div>
+      <div class="card-footer"><span class="location">trip-expenses-dashboard/src</span><a class="open" href="https://ernesto-ux.github.io/trip-expenses-dashboard/src/toulouse-carcassonne-2026-05.html" target="_blank">Abrir ↗</a></div>
+    </div>
+  </div>
+
+  <div class="section-title">👵 Notas de Voz Abue Rosita <span class="count">(11 archivos — público)</span></div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-head"><h3>Archivo de Voz — Abue Rosita</h3><div class="badges"><span class="badge b-yellow">🟡 Personal · familia</span><span class="badge b-blue">GH Public</span></div></div>
+      <div class="desc">38 notas de voz transcritas de la abuela († 2024-12-29). Familia, frases, retrato, timeline, círculo, universo, talisman, diccionario, estadísticas. Emocionalmente cargado.</div>
+      <div class="card-footer"><span class="location">ernesto-ux/abue-rosita-archivo</span><a class="open" href="https://ernesto-ux.github.io/abue-rosita-archivo/" target="_blank">Abrir ↗</a></div>
+    </div>
+  </div>
+
+  <div class="section-title">🎨 UI Changelog <span class="count">(1 archivo — público)</span></div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-head"><h3>UI Changelog</h3><div class="badges"><span class="badge b-green">🟢 Public-safe</span><span class="badge b-blue">GH Public</span></div></div>
+      <div class="desc">PoC público de un changelog visual. No tiene info confidencial.</div>
+      <div class="card-footer"><span class="location">ernesto-ux/ui-changelog</span><a class="open" href="https://ernesto-ux.github.io/ui-changelog/" target="_blank">Abrir ↗</a></div>
+    </div>
+  </div>
+
+  <div class="section-title">🧪 Sandbox — Manuales y experimentos <span class="count">(7 archivos — local/privado)</span></div>
+  <div class="cards">
+    <div class="card no-link">
+      <div class="card-head"><h3>Sandbox Manuals</h3><div class="badges"><span class="badge b-yellow">🟡 Personal</span><span class="badge b-purple">GH Private</span></div></div>
+      <div class="desc">Manuales internos: skills MIAS, skills Flowie, sandbox framework. Mencionan setup interno de Claude Code y workflows personales.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Sandbox/manuals/ · ernesto-ux/sandbox</span><span style="color:#6B6B85;">Privado</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>Autoeval — Team Radar · Role Radar</h3><div class="badges"><span class="badge b-orange">🟠 Internal Flowie</span><span class="badge b-purple">GH Private</span></div></div>
+      <div class="desc">Radars de evaluación de equipo Flowie y autoevaluación de roles. Contiene nombres internos y datos cualitativos.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Sandbox/autoeval/src/</span><span style="color:#6B6B85;">Privado</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>NutrIA Governance</h3><div class="badges"><span class="badge b-yellow">🟡 Personal</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Governance del proyecto NutrIA (no del tracker en sí).</div>
+      <div class="card-footer"><span class="location">~/Desktop/Sandbox/nutria-governance/</span><span style="color:#6B6B85;">Solo local</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================ FLOWIE ================ -->
+<div class="section" id="sec-flowie">
+
+  <div class="section-title">🏢 Client Dashboards <span class="count">(18 dashboards — local + GH Private)</span></div>
+  <div class="cards">
+    <div class="card no-link">
+      <div class="card-head"><h3>18 Client Dashboards</h3><div class="badges"><span class="badge b-orange">🟠 Internal Flowie</span><span class="badge b-purple">GH Private</span></div></div>
+      <div class="desc">ARHM, ARRG, Credipar, Eiffage, EPSA, Ervimmune, Exel, Gemy, Griffine, Groupe RG, INSEAD, Kactus, Paltech, PMU, Reptech, Sandmaster, Séché, Wabtec. Contienen métricas de adopción, contactos, roadmap, issues Linear, comms cliente.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Dashboards/ · flowieai/dashboards-flowie</span><span style="color:#6B6B85;">Privado</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">📊 Portfolio · Meeting · Cross-cutting <span class="count">(8 archivos)</span></div>
+  <div class="cards">
+    <div class="card no-link">
+      <div class="card-head"><h3>Portfolio Dashboard</h3><div class="badges"><span class="badge b-orange">🟠 Internal Flowie</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Hub central de cuentas. Datos cross-client agregados.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Dashboards/portfolio-dashboard.html</span><span style="color:#6B6B85;">Solo local</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>Meeting Dashboard</h3><div class="badges"><span class="badge b-orange">🟠 Internal Flowie</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Source of truth de reuniones: GCal + Fellow + Claap. Asistentes, transcripts links.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Dashboards/meeting-dashboard.html</span><span style="color:#6B6B85;">Solo local</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>Retro Dashboards Index</h3><div class="badges"><span class="badge b-orange">🟠 Internal Flowie</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Histórico de versiones visuales de dashboards.</div>
+      <div class="card-footer"><span class="location">retro-dashboards.html · Retrodesign/</span><span style="color:#6B6B85;">Solo local</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>Role Radar · Team Radar</h3><div class="badges"><span class="badge b-red">🔴 Highly sensible</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Mapeo de roles y equipo Flowie. Contiene juicios sobre colegas (Remi, Nicolas, Yann, Samia). NUNCA debe filtrarse.</div>
+      <div class="card-footer"><span class="location">role-radar.html · team-radar.html</span><span style="color:#6B6B85;">Solo local</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>Flowie Concepts</h3><div class="badges"><span class="badge b-orange">🟠 Internal Flowie</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Guía bilingüe EN/FR de conceptos Flowie. 12 secciones, document viewer.</div>
+      <div class="card-footer"><span class="location">flowie-concepts.html</span><span style="color:#6B6B85;">Solo local</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>Flowie Formation</h3><div class="badges"><span class="badge b-orange">🟠 Internal Flowie</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Manual de formación interna.</div>
+      <div class="card-footer"><span class="location">flowie-formation.html</span><span style="color:#6B6B85;">Solo local</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>Flowie Changelog + UI Changelog PoC</h3><div class="badges"><span class="badge b-orange">🟠 Internal Flowie</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Notificaciones de changelog Flowie (templates email + PoC visual).</div>
+      <div class="card-footer"><span class="location">flowie-changelog-notification · flowie-ui-changelog-poc</span><span style="color:#6B6B85;">Solo local</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>Guide Classification + VoC + Migrate Evals</h3><div class="badges"><span class="badge b-orange">🟠 Internal Flowie</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Guide_Classification_Documents_Flowie, VoC_summary_2026-04-21, migrate-evals, whats-new-flowie-log, manual.html, index.html.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Dashboards/</span><span style="color:#6B6B85;">Solo local</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">📁 Project Briefings <span class="count">(12 archivos — local)</span></div>
+  <div class="cards">
+    <div class="card no-link">
+      <div class="card-head"><h3>12 Project Briefings</h3><div class="badges"><span class="badge b-orange">🟠 Internal Flowie</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">ARHM, Eiffage, EPSA, Griffine, Groupe RG, INSEAD, Kactus, PMU, Reptech, Séché, Stellantis, Wabtec. Briefings de proyecto con stakeholders, dolor del cliente, riesgos.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Project-Briefings/</span><span style="color:#6B6B85;">Solo local</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">📰 Daily Reports <span class="count">(29 archivos — local)</span></div>
+  <div class="cards">
+    <div class="card no-link">
+      <div class="card-head"><h3>Briefings matin (15)</h3><div class="badges"><span class="badge b-orange">🟠 Internal Flowie</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Daily Briefing 2026-04-27 → 2026-05-15. Agenda, prioridades, contactos del día.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Daily_Reports/briefing/</span><span style="color:#6B6B85;">Solo local</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>EOD Reports (14)</h3><div class="badges"><span class="badge b-orange">🟠 Internal Flowie</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">End-of-day reports 2026-04-27 → 2026-05-14. Lo cerrado, lo abierto, lo siguiente.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Daily_Reports/eod/</span><span style="color:#6B6B85;">Solo local</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">🎨 Retrodesign Backups <span class="count">(8 archivos — local)</span></div>
+  <div class="cards">
+    <div class="card no-link">
+      <div class="card-head"><h3>Versionado visual de dashboards</h3><div class="badges"><span class="badge b-orange">🟠 Internal Flowie</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">portfolio v1.0/v1.2/current, meeting v1.0/v2.0/v2.7/current. Snapshots históricos.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Retrodesign/</span><span style="color:#6B6B85;">Solo local</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================ SENSIBLE ================ -->
+<div class="section" id="sec-sensible">
+
+  <div class="section-title">⚠️ Resumen del riesgo</div>
+  <div style="background:#FEF2F2; border-left:4px solid #DC2626; padding:18px 22px; border-radius:10px; margin-bottom:24px; font-size:13.5px; color:#7F1D1D;">
+    <strong style="display:block; margin-bottom:8px;">Estos archivos NO deberían vivir nunca en un repo público, ni en Slack, ni en email no cifrado.</strong>
+    Recomendaciones: <br>
+    • Mantenerlos solo locales o en GH privado con 2FA + recovery codes.<br>
+    • Backup cifrado (FileVault ya activo + iCloud o disco externo cifrado).<br>
+    • No mencionarlos en MEMORY.md por nombre evocador si la memoria sube a un repo.<br>
+    • Al salir de Flowie: copia personal antes del notice, borrar credenciales Flowie del Mac.
+  </div>
+
+  <div class="section-title">🔴 Legal · HR · Estrategia exit <span class="count">(~10 archivos)</span></div>
+  <div class="cards">
+    <div class="card no-link">
+      <div class="card-head"><h3>Caso SAF — Análisis Integral · Defensa Contraofensiva</h3><div class="badges"><span class="badge b-red">🔴 Highly sensible</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Caso legal/laboral. Análisis autónomo + plan de contraofensiva. Adversarial, sensible jurídicamente.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Caso SAF/ · No_Clasificado/</span><span style="color:#991B1B;">Nunca compartir</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>Legal-Flowie — Analyse Daniela</h3><div class="badges"><span class="badge b-red">🔴 Highly sensible</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Análisis legal sobre situación Flowie. Específico, identificativo.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Legal-Flowie/</span><span style="color:#991B1B;">Nunca compartir</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>FOR_MY_EYES_ONLY_M1</h3><div class="badges"><span class="badge b-red">🔴 Highly sensible</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Notas estratégicas personales sobre situación profesional. Nombre explícito.</div>
+      <div class="card-footer"><span class="location">~/Desktop/No_Clasificado/</span><span style="color:#991B1B;">Nunca compartir</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>Rapport Étape M1 2026-04-22</h3><div class="badges"><span class="badge b-red">🔴 Highly sensible</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Rapport interno sobre etapa profesional. Período d'essai context.</div>
+      <div class="card-footer"><span class="location">~/Desktop/No_Clasificado/</span><span style="color:#991B1B;">Nunca compartir</span></div>
+    </div>
+    <div class="card no-link">
+      <div class="card-head"><h3>Token Capture</h3><div class="badges"><span class="badge b-red">🔴 Highly sensible · credenciales</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Posiblemente contiene tokens JWT/API. AUDITAR: si están vivos, rotar inmediatamente. No commitear nunca.</div>
+      <div class="card-footer"><span class="location">~/Desktop/No_Clasificado/Token Capture.html</span><span style="color:#991B1B;">Auditar urgente</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">🔴 CV · Skills profesionales <span class="count">(2 archivos)</span></div>
+  <div class="cards">
+    <div class="card no-link">
+      <div class="card-head"><h3>Skills Personnels Ernesto</h3><div class="badges"><span class="badge b-red">🔴 Highly sensible</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">CV / mapeo de skills personal. Puede contener nombres de clientes Flowie. Si se comparte, anonimizar primero.</div>
+      <div class="card-footer"><span class="location">~/Desktop/No_Clasificado/</span><span style="color:#991B1B;">Anonimizar antes de compartir</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">🔴 Team Radar — juicios sobre colegas <span class="count">(2 archivos · ya listados en Flowie)</span></div>
+  <div class="cards">
+    <div class="card no-link">
+      <div class="card-head"><h3>Role Radar · Team Radar</h3><div class="badges"><span class="badge b-red">🔴 Highly sensible</span><span class="badge b-gray">Local</span></div></div>
+      <div class="desc">Contiene juicios sobre patrones de management (Remi, Nicolas, Yann, Samia, Baptiste). Si filtrara, daño reputacional bilateral.</div>
+      <div class="card-footer"><span class="location">~/Desktop/Dashboards/ · Sandbox/autoeval/src/</span><span style="color:#991B1B;">Nunca compartir</span></div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="foot">
+  HTML Hub — generado 2026-05-15 · PIN client-side (no es seguridad real, solo barrera anti-acceso casual)
+</footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('active'); });
+      document.querySelectorAll('.section').forEach(function(x){ x.classList.remove('active'); });
+      t.classList.add('active');
+      document.getElementById('sec-' + t.dataset.section).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>
